@@ -82,7 +82,7 @@ export ZSH=/Users/pauldailly/.oh-my-zsh
 # alias zshconfig="mate ~/.zshrc"
 # alias ohmyzsh="mate ~/.oh-my-zsh"
 
-for f in ~/projects/personal/dotfiles/files/.*; do
+for f in ~/.dotfiles/.*; do
   if [[ -f $f ]]; then
     source $f;
   fi
@@ -90,7 +90,9 @@ done
 
 source $ZSH/oh-my-zsh.sh
 
-source ~/projects/personal/dotfiles/files/.aliases
+# Workaround to override 'ls' alias being set by something in ohmyzsh - need to
+# find out what is setting this so the next line can be removed
+source ~/.dotfiles/.aliases
 
 # ondir config
 eval_ondir() {

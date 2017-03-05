@@ -7,6 +7,9 @@ if [ -f $FILE ]; then
    mv $FILE $FILE.~1
 fi
 
+cp -R $SCRIPT_DIR/files ~/.dotfiles/
 cp $SCRIPT_DIR/.zshrc $FILE
-#cd ~ && source $FILE
+
 exec /bin/zsh
+
+exit 0
