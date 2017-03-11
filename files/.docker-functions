@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+
+# Stop all currently running containers
+function dsc() {
+  docker stop $(docker ps -a -q) && docker rm $(docker ps -a -q)
+}
+
+# Remove all currently running containers (must be stopped first)
+function drc() {
+  docker stop $(docker ps -a -q) && docker rm $(docker ps -a -q)
+}

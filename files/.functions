@@ -33,3 +33,7 @@ function json() {
 		python -mjson.tool | pygmentize -l javascript;
 	fi;
 }
+
+function port(){
+  lsof -i :"$@"
+}
