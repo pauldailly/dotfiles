@@ -32,3 +32,5 @@ alias path='echo -e ${PATH//:/\\n}'
 #Get the weather in current location
 alias wttr="curl wttr.in"\
 
+#Docker
+alias dps="docker ps"
