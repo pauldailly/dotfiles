@@ -1,6 +1,94 @@
 ;; edn spec https://github.com/edn-format/edn
 {;;;; define things
+ :default true
+ :simlayer-threshold 222
+ :devices {;; Note - I'm currently using a Kinesis Advantage keyboard for my defaults
+           ;; and my macbook hasn't left my desk in a looooooong time...
+           :macbook [{:product_id 832 :vendor_id 1452}]
+           ;
+           }
+ :modifiers {;
+             :ct [:command :control]
+             :hyper [:command :shift :control :option]
+             :cs [:command :shift]
+             :cts [:command :control :shift]
+ ;
+             }
 
+ :tos {;
+       :emoji_picker {:key :spacebar :modi :ct} ;!CTspacebar
+       :open_1password {:key :p :modi :hyper} ;!OCbackslash
+       :autocomplete {:key :spacebar :modi :control}
+       :take_screenshot {:key :4 :modi :cts} ;!CS6
+       :command_tilde {:key :grave_accent_and_tilde :modi :command}
+       :focus_editor {:key :grave_accent_and_tilde :modi :control}
+       :focus_terminal {:key :j :modi :command}
+       :hyper1 {:key :1 :modi :hyper}
+       :altf12 {:key :f12 :modi :option}
+       :tb {:key :tab :modi :control}
+ ;
+       }
+
+ :templates {;
+             :paste "osascript -e '
+                        set the clipboard to \"%s\"
+                        tell application \"System Events\"
+                                keystroke \"v\" using command down
+                        end tell
+                '"
+             :launch "osascript -e 'tell application \"%s\" to activate'"
+
+             :open-chrome "osascript -e '
+                        set address to \"%s\"
+                        
+                        tell application \"Google Chrome\"
+                           activate
+                                if not (exists window 1) then reopen
+                                repeat with w in windows
+                                        set i to 1
+                                        repeat with t in tabs of w
+                                        if URL of t contains address then
+                                                set active tab index of w to i
+                                                set index of w to 1
+                                                return
+                                        end if
+                                        set i to i + 1
+                                        end repeat
+                                end repeat
+                                open location \"http://\" & address
+                        end tell
+                           '"
+ ;
+             }
+ :applications {;
+
+                :chrome ["com.google.Chrome"]
+                :code ["com.microsoft.VSCode"]
+                :slack ["com.tinyspeck.slackmacgap"]
+                :intellij ["com.jetbrains.intellij"]
+                :hey ["com.hey.app.desktop"]
+                :iterm2 ["com.googlecode.iterm2"]
+                :phorest ["com.install4j.2479-1255-1247-2836.5"]
+                :1password ["com.agilebits.onepassword7"]
+                :zoom ["us.zoom.xos"]
+ ;
+                }
+ :layers {;
+          :caps_lock-mode {:key :caps_lock :alone {:key :escape}}
+          :launch-mode {:key :l}
+          :spacebar-mode {:key :spacebar}
+          ;
+          }
+
+ :simlayers {;
+             :emoji-mode {:key :e}
+             :movement-mode {:key :f}
+             :alt-mode {:key :g}
+             :alt-shift-mode {:key :s}
+             :command-mode {:key :c}
+             :delete-mode {:key :d}
+             ;
+             }
  ;; main list
  :main
  ;; [<from> <to>] or
@@ -10,8 +98,136 @@
  ;; <to> can be keywords defined in tos, keycodes without `{:not-to true}`, string (shell script)
  ;; <conditions> can be keywords defined in layers, devices, applications
  ;; <other options> {:other {:parameters {:to_delayed_action_delay_milliseconds 100 :basic.to_if_alone_timeout_milliseconds 500 :basic.to_if_held_down_threshold_milliseconds 250}} }
- [{:des "a to 1" :rules [[:a :1]]} ;; a to 1
- ]
+ [;;
+  {:des   "caps_lock to esc when pressed alone, to ctrl as modifier"
+   :rules [[:caps_lock :left_control nil {:alone :escape}] ;nil is for conditional, i.e. :condi
+           ]}
+
+  {:des "chrome"
+   :rules [;
+           [:condi :chrome :caps_lock-mode]
+           [:h :!TStab]
+           [:k :!Ttab]
+
+                 ;
+           ]}
+
+  {:des "slack"
+   :rules [;
+           [:condi :slack]
+           [:left_command :left_command nil {:alone :!Ct}]
+           [:condi :slack :spacebar-mode]
+           [:z [:paste "/zoom"]]
+           [:x [:paste "Cool thanks 👍"]]
+                 ;
+           ]}
+
+  {:des "code"
+   :rules [:code
+           [:left_command :left_command nil {:alone :focus_editor}]
+           [:left_option :left_option nil {:alone :focus_terminal}]
+                 ;
+           ]}
+
+  {:des "intellij"
+   :rules [:intellij
+           [:left_command :left_command nil {:alone :hyper1}]
+           [:left_option :left_option nil {:alone :altf12}]
+                 ;
+           ]}
+
+  {:des   "caps lock mode"
+   :rules [:caps_lock-mode
+           [:s [:take_screenshot]]
+           [:w [:command_tilde]]
+           ;
+           ]}
+
+  {:des   "alt-mode"
+   :rules [:alt-mode
+           [:##h :!Oleft_arrow]
+           [:##k :!Oright_arrow]
+           ;
+           ]}
+  {:des   "alt-shift-mode"
+   :rules [:alt-shift-mode
+           [:##h :!OSleft_arrow]
+           [:##k :!OSright_arrow]
+           ;
+           ]}
+
+  {:des   "command mode"
+   :rules [:command-mode
+           [:##h :!Cleft_arrow]
+           [:##k :!Cright_arrow]
+           ;
+           ]}
+
+  {:des "delete mode"
+   :rules [:delete-mode
+           [:##h :delete_or_backspace]
+           [:##k :delete_forward]
+           [:##u :!Tu]
+           [:##j :!Tk]
+                 ;
+           ]}
+  {:des "emoji"
+   :rules [:emoji-mode
+           [:b [:paste "👍"]] ;thumB
+           [:c [:paste "👏"]] ;clap
+           [:d [:paste "🧐"]] ;dignified
+           [:f [:paste "🤞"]] ;fingers crossed
+           [:g [:paste "😬"]] ;grimace
+           [:h [:paste "😍"]] ;heart-eyes
+           [:j [:paste "😂"]] ;joking
+           [:p :emoji_picker]
+           [:q [:paste "🤫"]] ;quiet
+           [:r [:paste "🙌"]] ;raised hands
+           [:s [:paste "😢"]] ;sad
+           [:t [:paste "🎉"]] ;tada
+           [:v [:paste "😎"]] ;very cool
+           [:w [:paste "😉"]] ;wink:
+           [:y [:paste "😅"]] ;sweatY
+           ;
+           ]}
+
+  {:des "launch"
+   :rules
+   [:launch-mode
+    [:1 [:launch "1Password 7"]]
+    [:s [:launch "Slack"]]
+    [:c [:launch "Chrome"]]
+    [:v [:launch "Visual Studio Code"]]
+    [:j [:launch "IntelliJ IDEA"]]
+    [:h [:launch "HEY"]]
+    [:t [:launch "iTerm"]]
+    [:p [:launch "Phorest"]]
+    [:z [:launch "zoom.us"]]
+    [:f [:launch "Spotify"]]
+    [:d [:launch "Microsoft To Do"]]
+    [:m [:open-chrome "mail.google.com"]]
+    [:r [:open-chrome "calendar.google.com"]]
+    [:b [:open-chrome "phorest.jira.com"]] ; Jira *B*oard
+    [:g [:open-chrome "github.com"]] ; Jira *B*oard
+    ;
+    ]}
+
+  {:des "homerow movement"
+
+   :rules [:movement-mode
+           [:##h :left_arrow]
+           [:##j :down_arrow]
+           [:##u :up_arrow]
+           [:##k :right_arrow]
+           [:##l :return_or_enter]
+          ;  [:return_or_enter :insert_line_below]
+
+
+                 ;
+           ]}
+           ;
+  ]
+
 
  ;; code won't read cheatsheet section
  ;; ! stand for mandatory
@@ -19,6 +235,8 @@
  ;; C T O S for left command control optional shift
  ;; F for fn
  ;; need to prefix C T O S F with ! or #
+
+
  :cheatsheet {:!Ca "command a" ;; mandatory left_command
               :!Ta "control a" ;; mandatory left_control
               :!Oa "option a"
