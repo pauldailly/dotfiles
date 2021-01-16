@@ -82,11 +82,12 @@
 
  :simlayers {;
              :emoji-mode {:key :e}
-             :movement-mode {:key :f}
-             :alt-mode {:key :g}
-             :alt-shift-mode {:key :s}
-             :command-mode {:key :c}
-             :delete-mode {:key :d}
+             :movement-mode {:key :d}
+             :alt-mode {:key :s}
+             :alt-shift-mode {:key :a}
+             :command-mode {:key :w}
+             :command-shift-mode {:key :q}
+             :delete-mode {:key :f}
              ;
              }
  ;; main list
@@ -140,6 +141,10 @@
    :rules [:caps_lock-mode
            [:s [:take_screenshot]]
            [:w [:command_tilde]]
+           [:##h :!Sleft_arrow]
+           [:##k :!Sright_arrow]
+           [:##u :!Sup_arrow]
+           [:##j :!Sdown_arrow]
            ;
            ]}
 
@@ -147,12 +152,16 @@
    :rules [:alt-mode
            [:##h :!Oleft_arrow]
            [:##k :!Oright_arrow]
+           [:##u :!Oup_arrow]
+           [:##j :!Odown_arrow]
            ;
            ]}
   {:des   "alt-shift-mode"
    :rules [:alt-shift-mode
            [:##h :!OSleft_arrow]
            [:##k :!OSright_arrow]
+           [:##u :!OSup_arrow]
+           [:##j :!OSdown_arrow]
            ;
            ]}
 
@@ -160,6 +169,15 @@
    :rules [:command-mode
            [:##h :!Cleft_arrow]
            [:##k :!Cright_arrow]
+           ;
+           ]}
+
+  {:des   "command shift mode"
+   :rules [:command-shift-mode
+           [:##h :!CSleft_arrow]
+           [:##k :!CSright_arrow]
+           [:##u :!CSup_arrow]
+           [:##j :!CSdown_arrow]
            ;
            ]}
 
@@ -209,6 +227,7 @@
     [:r [:open-chrome "calendar.google.com"]]
     [:b [:open-chrome "phorest.jira.com"]] ; Jira *B*oard
     [:g [:open-chrome "github.com"]] ; Jira *B*oard
+    [:a [:open-chrome "console.aws.amazon.com"]] ; *A*WS
     ;
     ]}
 
@@ -220,6 +239,7 @@
            [:##u :up_arrow]
            [:##k :right_arrow]
            [:##l :return_or_enter]
+           [:##f :!Cz]
           ;  [:return_or_enter :insert_line_below]
 
 
